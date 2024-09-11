@@ -1,5 +1,3 @@
-Here's a well-structured README for your recommendation system project:
-
 # Recommendation System Project
 
 ## Overview
@@ -8,44 +6,44 @@ This project is a solution to a Data Science assignment focused on building a re
 ---
 
 ## Table of Contents
-- [Tutorial](#tutorial)
+- [Installation](#installation)
 - [Data](#data)
 - [Model](#model)
 - [Hyperparameter Tuner](#hyperparameter-tuner)
 
 ---
 
-## Tutorial
-### Installation
+## Installation
 To run the project locally, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/recommendation-system.git
-   cd recommendation-system
+   git clone https://github.com/samzirbo/Recommendation-Systems
+   cd Recommendation-Systems
    ```
 
 2. Set up a Python virtual environment:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   source venv/bin/activate  
    ```
+    or
+   ```bash
+   conda activate venv
+   ```
+
 
 3. Install the required dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip install poetry
+   poetry install
    ```
 
-4. Run the project:
+4. Run the experiments:
    ```bash
-   python main.py --search_space config/search_space.json --metric RMSE
+   python experiment.py --search_space data/search_space.json --metric RMSE
    ```
 
-### Usage Example
-To tune the model with a specific hyperparameter search space:
-```bash
-python main.py --search_space config/search_space.json --metric RMSE --verbose
-```
 This command will train the model using the provided search space and optimize based on the RMSE metric.
 
 ---
@@ -64,16 +62,6 @@ The interaction data is split into training and test sets to evaluate the perfor
 - **Product Dataset (`item_data.csv`)**: Contains product-related features like `item_id`, `category`, `price`, etc.
 - **User-Interaction Dataset (`ratings.csv`)**: Includes `user_id`, `item_id`, and `rating`, as well as behavioral data in `behavior.csv`.
 
-### Example
-Below is a snapshot of the interaction data:
-```csv
-user_id,item_id,rating
-101,501,4.0
-102,502,3.5
-103,503,5.0
-...
-```
-
 ---
 
 ## Model
@@ -88,8 +76,8 @@ This project implements multiple recommendation models, each targeting different
 ### Model Evaluation
 The models are evaluated on common recommendation metrics, including:
 - **RMSE (Root Mean Squared Error)**: Measures how close predicted ratings are to actual ratings.
-- **Precision@K**: Evaluates the relevance of top-K recommendations.
-- **Recall@K**: Measures how many of the relevant items are present in the top-K recommendations.
+- **MSE (Mean Squared Error)**: Measures the average squared difference between predicted and actual ratings.
+- **MAE (Mean Absolute Error)**: Measures the average absolute difference between predicted and actual ratings.
 
 Each model can be customized with hyperparameters such as latent factor size, learning rate, and regularization, as shown in the `search_space.json` configuration file.
 
@@ -100,44 +88,42 @@ Each model can be customized with hyperparameters such as latent factor size, le
 The hyperparameter tuner uses **Hyperopt** to optimize model parameters. It automatically adjusts the search space to find the best hyperparameters for each recommendation model based on the specified metric (e.g., RMSE).
 
 ### How It Works
-1. **Search Space Definition**: Hyperparameter search space is defined in a JSON file (e.g., `config/search_space.json`). This includes the model class and ranges for each hyperparameter.
+1. **Search Space Definition**: Hyperparameter search space is defined in a JSON file (e.g., `data/search_space.json`). This includes the model class and ranges for each hyperparameter.
    
    Example snippet from `search_space.json`:
    ```json
    {
-       "CollaborativeFilteringExperiment": {
-           "model": "CollaborativeFilteringRecSys",
-           "no_iter": 50,
-           "params": {
-               "latent_factors": [10, 20, 30],
-               "learning_rate": [0.001, 0.01, 0.1]
-           }
-       }
+       "Multi-Layer Perceptron": {
+            "model": "MLPRecSys",
+            "no_iter": 100,
+            "params": {
+                "embedding_dim": [10, 50, 100],
+                "hidden_size": [8, 16, 32],
+                "n_layers": [1, 2, 3],
+                "dropout": [0.2, 0.4, 0.6],
+                "n_epochs": [5, 10, 20, 50, 100],
+                "batch_size": [8, 16, 32, 64],
+                "learning_rate": [0.0001, 0.0005, 0.001, 0.005, 0.01],
+                "weight_decay": [0.000001, 0.00001, 0.0001, 0.001]
+            }
+        }
    }
    ```
 
-2. **Hyperopt Search**: The tuner uses Hyperopt's `fmin` function with the **Tree-structured Parzen Estimator (TPE)** algorithm to explore the hyperparameter space efficiently.
+2. **Hyperopt Search**: The tuner uses Hyperopt's `fmin` function to explore the hyperparameter space efficiently.
    
-3. **Model-Specific Adjustments**: For models that require specific data configurations (e.g., neural network models), the tuner automatically adjusts additional parameters like the number of users and items.
-
-4. **Results**: After the search, the best set of hyperparameters is printed and can be used for model training.
-
-### Running the Tuner
-To run the hyperparameter tuner, execute:
-```bash
-python main.py --search_space config/search_space.json --metric RMSE
-```
-
-If you want to enable verbose logging, add the `--verbose` flag:
-```bash
-python main.py --search_space config/search_space.json --metric RMSE --verbose
-```
+3. **Results**: The experiments, along with hyperparameters and metrics, are logged using **MLflow** for tracking and analysis.
 
 ---
 
-## Contact
-For any questions or feedback, please reach out to me at [your-email@example.com].
+## Experiment Tracking and Visualization
+
+The project uses **MLflow** to log and visualize the results of the experiments. You can view the results by running the MLflow UI:
+
+```bash
+mlflow ui --host 0.0.0.0 --port 5001
+```
+
+This command will start the MLflow server, and you can access the UI by navigating to `http://0.0.0.0:5001` in your browser.
 
 ---
-
-Feel free to customize this README as needed, and ensure that the `search_space.json` and dataset paths align with your project's structure.
