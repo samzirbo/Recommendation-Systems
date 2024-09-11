@@ -1,0 +1,3 @@
+from .collaborative_filtering import CollaborativeFilteringRecSys
+from .matrix_factorization import SVDRecSys
+from .neural_nets import MLPRecSys, NeuralCFRecSys

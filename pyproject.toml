@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "tkw-data-science-assignment"
+version = "0.1.0"
+description = ""
+authors = ["samzirbo"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pandas = "^2.2.2"
+jupyter = "^1.1.1"
+seaborn = "^0.13.2"
+torch = "2.2.2"
+numpy = "1.26.4"
+scikit-learn = "^1.5.1"
+surprise = "^0.1"
+tqdm = "^4.66.5"
+mlflow = "^2.16.0"
+faker = "^28.4.1"
+hyperopt = "^0.2.7"
+mmengine = "^0.10.4"
+argparse = "^1.4.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
